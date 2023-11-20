@@ -8,3 +8,4 @@ Werkzeug
 numpy
 pandas
 matplotlib
+seaborn
