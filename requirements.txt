@@ -7,3 +7,4 @@ MarkupSafe
 Werkzeug
 numpy
 pandas
+matplotlib
