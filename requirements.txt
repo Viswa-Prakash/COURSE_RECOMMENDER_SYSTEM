@@ -6,7 +6,7 @@ Jinja2
 MarkupSafe
 Werkzeug
 numpy
-pandas
+pandas<2.0.0
 matplotlib
 seaborn
 scikit-learn
