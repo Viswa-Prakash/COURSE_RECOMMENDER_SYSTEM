@@ -14,11 +14,14 @@ import pickle
 
 popular_50_courses = pickle.load(open('popular_50_courses.pkl', 'rb'))
 popular_courses = pickle.load(open('popular_courses.pkl', 'rb'))
-new_df = pickle.load(open('new_df.pkl', 'rb'))
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+courses_crs = pickle.load(open('courses_crs.pkl', 'rb'))
+vectors = pickle.load(open('vectors.pkl', 'rb'))
 
 
 app = Flask(__name__)
+
+def similarity(vectors):
+    return cosine_similarity(vectors)
 
 
 @app.route('/')
@@ -37,7 +40,8 @@ def recommend_ui():
 @app.route('/recommend_courses', methods=['POST'])
 def recommend():
     user_input = request.form.get('user_input')
-    course_index = new_df[new_df['title'] == user_input].index[0]
+    course_index = courses_crs[courses_crs['title'] == user_input].index[0]
+    similarity = cosine_similarity(vectors)
     distances = similarity[course_index]
     course_list = sorted(list(enumerate(distances)), reverse = True, key = lambda x: x[1])[1:5]
     data = []
