@@ -10,3 +10,5 @@ Incorporated user ratings and subscriber counts as key metrics to refine recomme
 
 The course recommender system not only streamlines the discovery of relevant content but also fosters a tailored learning experience, empowering employees to engage with courses that align with their professional growth objectives. This innovative approach contributes to a culture of continuous learning within the organization."
 
+The recommender system is deployed using flask on railway app. Click on the link to use the Course Recommender System
+https://courserecommendersystem-production.up.railway.app
