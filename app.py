@@ -23,6 +23,11 @@ app = Flask(__name__)
 def similarity(vectors):
     return cosine_similarity(vectors)
 
+def searchterm(keyword, df):
+    result_df = df[df['title'].str.lower().str.contains(keyword)]
+    top4 = result_df.sort_values(by='num_subscribers', ascending=False).head(4)
+    return top4
+
 
 @app.route('/')
 
@@ -40,22 +45,39 @@ def recommend_ui():
 @app.route('/recommend_courses', methods=['POST'])
 def recommend():
     user_input = request.form.get('user_input')
-    course_index = courses_crs[courses_crs['title'] == user_input].index[0]
-    similarity = cosine_similarity(vectors)
-    distances = similarity[course_index]
-    course_list = sorted(list(enumerate(distances)), reverse = True, key = lambda x: x[1])[1:5]
-    data = []
-    
-    for i in course_list:
-        item =[]
-        temp_df = popular_courses[popular_courses['title'] == popular_courses.iloc[i[0]].title]
-        item.extend(list(temp_df['title'].values))
-        item.extend(list(temp_df['instructor_name'].values))
-        item.extend(list(temp_df['course_url'].values))
+    try:
+        course_index = courses_crs[courses_crs['title'] == user_input].index[0]
+        similarity = cosine_similarity(vectors)
+        distances = similarity[course_index]
+        course_list = sorted(list(enumerate(distances)), reverse = True, key = lambda x: x[1])[1:5]
+        data = []
         
-        data.append(item)
+        for i in course_list:
+            item =[]
+            temp_df = popular_courses[popular_courses['title'] == popular_courses.iloc[i[0]].title]
+            item.extend(list(temp_df['title'].values))
+            item.extend(list(temp_df['instructor_name'].values))
+            item.extend(list(temp_df['course_url'].values))
+            
+            data.append(item)
+        return render_template('recommend.html', data=data)
+    
+    except:
+        user_input = user_input.lower()
+        resultdf = searchterm(user_input, popular_courses)
+        data = []
+        course_title = resultdf['title'].unique()[:5]
+        for title in course_title:
+            item1 = []
+            temp_df = resultdf.loc[resultdf['title'] == title]
+            item1.extend(list(temp_df['title'].values))
+            item1.extend(list(temp_df['instructor_name'].values))
+            item1.extend(list(temp_df['course_url'].values))
+        
+            data.append(item1)
+
+        return render_template('recommend.html', data=data)
       
-    return render_template('recommend.html', data=data)
 
 if __name__=="__main__":
     app.run(debug=True)
